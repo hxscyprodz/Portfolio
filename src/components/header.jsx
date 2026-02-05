@@ -1,26 +1,23 @@
-import { Sun, Moon } from "lucide-react";
-import { useState } from "react";
+import { Sun, Moon, Menu } from "lucide-react";
+import Logo from "./logo";
+import { useState, useContext } from "react";
 import PrimaryButton from "../ui/button";
+import SideBar from "./sidebar";
+import links from "../data/links";
+import { SidebarContext } from "../hooks/sidebarContext";
 
 function Header () {
     const [ isDark, setIsDark ] = useState(true);
-
-    //Header links array for easier rendering
-    const headerLinks = [
-        { key: "link01", title: "Home", path: "/services"},
-        { key: "link02", title: "About", path: "/services"},
-        { key: "link03", title: "Services", path: "/services"},
-        { key: "link04", title: "Blog", path: "/services"},
-        { key: "link05",title: "Contact", path: "/services"},
-    ]
+    const { toggleSidebar} = useContext(SidebarContext);
 
     //header links rendering
-    const links = headerLinks.map( link => {
+    const linksElement = links.map( link => {
         return (
-            <a className="hover:text-blue-700" 
-                key={link.key}
-                href={link.path}>{link.title}
-            </a>
+            <div key={link.key} className="tooltip">
+                <a className="hover:text-blue-700" 
+                    href={link.path}>{link.title}
+                </a>
+            </div>
         )
     })
 
@@ -32,24 +29,28 @@ function Header () {
     
 
     return(
-        <header className="flex justify-between h-30 items-center px-50
-            fixed left-0 right-0">
+        <header className="flex justify-between h-20 items-center px-5
+            fixed top-0 left-0 right-0 bg-[#031233] z-50">
+            <Logo />
             <div>
-                <h1 className="font-bold text-3xl">HxscyTech</h1>
-                <p className="text-sm italic">Code . Create . Conquer</p>
-            </div>
-            <div>
-                <nav className="flex gap-10 text-md">
+                <nav className="hidden gap-10 text-md xl:flex">
                     {/*Header links*/}
-                    {links}
+                    {linksElement}
                 </nav>
             </div>
-            <div className="flex items-center gap-7">
+            <div className="flex xl:hidden">
+                <button  onClick={toggleSidebar}
+                    className="cursor-pointer">
+                    <Menu />
+                </button>
+            </div>
+            <div className="hidden xl:flex items-center gap-7">
                 <button onClick={toggleTheme} className="cursor-pointer">
                     {isDark === true ? <Sun /> : <Moon fill="black" color="black"/> }
                 </button>
                 <PrimaryButton text="Sign Up"/>
             </div>
+            <SideBar />
         </header>
     )
 }
